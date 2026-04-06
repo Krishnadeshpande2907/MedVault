@@ -1,0 +1,45 @@
+# --- Build Artifacts ---
+/build/
+/app/build/
+/.gradle/
+bin/
+gen/
+out/
+
+# --- IDE Files (Android Studio / IntelliJ / VS Code) ---
+.idea/
+*.iml
+.vscode/
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+*.swp
+*~
+
+# --- Local Configurations (NEVER commit these) ---
+local.properties
+/secrets.properties
+*.jks
+*.keystore
+
+# --- Room Schemas (Optional) ---
+# If you want to track database migrations, you can remove this.
+# But for now, we're ignoring them.
+/app/schemas/
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+# --- Log Files ---
+*.log
+
+# --- Test Data & Snapshots ---
+/test-reports/
+/screenshots/
+
+# --- Antigravity / Project Notes (Optional) ---
+# Uncomment below if you only want these on your local machine
+# implementation_plan.md
+# antigravity_medvault_prompt.md

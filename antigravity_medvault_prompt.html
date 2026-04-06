@@ -1,0 +1,425 @@
+
+<style>
+  :root {
+    --accent: #1D9E75;
+    --accent-light: #E1F5EE;
+    --accent-dark: #085041;
+    --muted: var(--color-text-secondary);
+    --border: var(--color-border-tertiary);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .doc { max-width: 780px; padding: 2rem 0; }
+  .badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero-title {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin: 10px 0 6px;
+    line-height: 1.25;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+  .divider {
+    border: none;
+    border-top: 0.5px solid var(--border);
+    margin: 1.75rem 0;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 12px;
+  }
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .card-body {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    padding-left: 16px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 12px;
+  }
+  .code-block {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-md);
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--color-text-primary);
+    line-height: 1.75;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .node-diagram {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .node-box {
+    background: var(--accent-light);
+    border: 0.5px solid #5DCAA5;
+    border-radius: var(--border-radius-md);
+    padding: 8px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--accent-dark);
+  }
+  .node-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    padding: 0 2px;
+  }
+  .node-sub {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-md);
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 12px;
+  }
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 10px;
+    margin: 1rem 0;
+  }
+  .metric-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 0.85rem 1rem;
+    text-align: center;
+  }
+  .metric-num {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .metric-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  .priority-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .p-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .p1 { background: #FCEBEB; color: #791F1F; }
+  .p2 { background: #FAEEDA; color: #633806; }
+  .p3 { background: #E6F1FB; color: #0C447C; }
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    border-radius: var(--border-radius-md);
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  .copy-btn:hover { background: var(--color-background-secondary); }
+  @media (max-width: 560px) {
+    .two-col { grid-template-columns: 1fr; }
+    .metric-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<div class="doc">
+
+  <span class="badge">Project brief — MedVault</span>
+  <h1 class="hero-title">Build a local-first personal health records app</h1>
+  <p class="hero-sub">A mobile application that gives patients full ownership over their fragmented medical history — prescriptions, reports, images — stored entirely on-device with AI-powered summaries.</p>
+
+  <div class="metric-row">
+    <div class="metric-card"><div class="metric-num">9</div><div class="metric-lbl">Severity score</div></div>
+    <div class="metric-card"><div class="metric-num">7</div><div class="metric-lbl">TAM score</div></div>
+    <div class="metric-card"><div class="metric-num">9</div><div class="metric-lbl">Frequency score</div></div>
+    <div class="metric-card"><div class="metric-num">80</div><div class="metric-lbl">ITCH score</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Problem context</div>
+  <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:1.5rem;">
+    Doctors treating patients in emergencies or follow-up visits across different hospitals cannot access consolidated medical histories, previous prescriptions, drug allergy information, or ongoing medication regimens — because health records remain fragmented across individual hospitals with no interoperable national health database system. This app puts the patient in control by consolidating all records on their own device.
+  </p>
+
+  <hr class="divider">
+
+  <div class="section-label">Data model — linked list architecture</div>
+  <div class="section-title">Node structure</div>
+
+  <div class="node-diagram">
+    <div class="node-box">Visit Node</div>
+    <div class="node-arrow">→</div>
+    <div class="node-box">Prescription Node</div>
+    <div class="node-arrow">→</div>
+    <div class="node-box">Media Node[]</div>
+    <div class="node-arrow">→</div>
+    <div class="node-box">null</div>
+  </div>
+
+  <div class="code-block">{
+  "visitId": "uuid-v4",
+  "date": "ISO-8601",
+  "doctorName": "string",
+  "doctorPhone": "string",
+  "hospitalName": "string",
+  "prescription": {
+    "prescriptionId": "uuid-v4",
+    "rawText": "string | null",
+    "photoUri": "local-file-path | null",
+    "medicines": [
+      {
+        "name": "string",
+        "dosage": "string",
+        "frequency": "string",
+        "duration": "string"
+      }
+    ],
+    "aiSummary": "string",
+    "aiSummaryGeneratedAt": "ISO-8601"
+  },
+  "mediaAttachments": [
+    {
+      "mediaId": "uuid-v4",
+      "type": "xray | report | before | after | other",
+      "localUri": "local-file-path",
+      "caption": "string",
+      "capturedAt": "ISO-8601"
+    }
+  ],
+  "nextVisit": "visitId | null",
+  "prevVisit": "visitId | null",
+  "tags": ["string"],
+  "createdAt": "ISO-8601"
+}</div>
+
+  <hr class="divider">
+
+  <div class="section-label">Feature specifications</div>
+
+  <div class="priority-row">
+    <span class="p-badge p1">P1 — Core</span>
+    <span style="font-size:13px; font-weight:500; color:var(--color-text-primary)">Prescription logging</span>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Camera capture flow</div>
+    <div class="card-body">User opens camera within the app, photographs a physical prescription. The image is saved to local storage at a deterministic path (e.g. <code>medvault/prescriptions/{visitId}.jpg</code>). OCR runs on-device (via ML Kit or Tesseract WASM) to extract text and pre-populate the medicine list. User can correct extracted fields inline before saving.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Manual entry form</div>
+    <div class="card-body">A structured form with fields: doctor name, doctor phone / hospital number, date of visit, medicine name + dosage + frequency + duration (repeatable rows), diagnosis / notes free-text, next appointment date. All fields optional except date.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Doctor & hospital info</div>
+    <div class="card-body">Doctor contact block is a reusable component: name, phone, hospital name, specialty. Previously used doctors are suggested via local autocomplete (stored in a separate <code>contacts.json</code>) so returning users aren't re-typing every visit.</div>
+  </div>
+
+  <div class="priority-row" style="margin-top:1.2rem">
+    <span class="p-badge p1">P1 — Core</span>
+    <span style="font-size:13px; font-weight:500; color:var(--color-text-primary)">AI prescription summary</span>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>On-device or local-API summary</div>
+    <div class="card-body">Each prescription gets an AI-generated plain-language summary. Since data must not leave the device, use a locally-running LLM (e.g. Phi-3-mini via ONNX Runtime or llama.cpp) or a user-configurable private API endpoint (self-hosted Ollama). Summary covers: what the medicines are for, key side effects to watch, interactions flagged if multiple medicines present, and what to tell the next doctor. Summary is cached in JSON and regenerated only when the prescription changes.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Summary display UI</div>
+    <div class="card-body">Shown as a collapsible card beneath the prescription. Three sections: "What you were prescribed", "Why (diagnosis summary)", "What to watch for". Uses plain language — no medical jargon. A small "regenerate" button re-runs inference if the user edits the prescription. Timestamp shown for when summary was last generated.</div>
+  </div>
+
+  <div class="priority-row" style="margin-top:1.2rem">
+    <span class="p-badge p1">P1 — Core</span>
+    <span style="font-size:13px; font-weight:500; color:var(--color-text-primary)">Timeline & sorting</span>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Chronological linked list traversal</div>
+    <div class="card-body">The visit linked list is sorted by <code>date</code> descending (most recent first) as the default view. Each card in the timeline shows: date, doctor name, hospital, top-line AI summary sentence, and a count of attached media. Tapping opens the full visit detail screen. Users can also sort ascending (oldest first) for longitudinal review.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Filter & search</div>
+    <div class="card-body">Filter by: date range, doctor name, tag, media type present (has X-ray, has report, etc.). Full-text search across prescription text, doctor names, and AI summaries — implemented with a local inverted index (e.g. Fuse.js or MiniSearch) built from the JSON store at app launch.</div>
+  </div>
+
+  <div class="priority-row" style="margin-top:1.2rem">
+    <span class="p-badge p2">P2 — Important</span>
+    <span style="font-size:13px; font-weight:500; color:var(--color-text-primary)">Media attachments</span>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Attachment types supported</div>
+    <div class="card-body">X-rays, lab reports (PDF or image), before/after photos, general medical images. Each attachment stores: local URI, capture timestamp, type enum, and a free-text caption. Files stored at <code>medvault/media/{visitId}/{mediaId}.ext</code>. PDF viewer built-in (react-native-pdf or equivalent). Image viewer with pinch-to-zoom.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Media gallery per visit</div>
+    <div class="card-body">A scrollable grid of thumbnails within each visit detail screen. Tapping opens a full-screen viewer with swipe navigation between attachments. Long-press shows caption + type. Users can add new attachments to any past visit at any time.</div>
+  </div>
+
+  <div class="priority-row" style="margin-top:1.2rem">
+    <span class="p-badge p3">P3 — Nice to have</span>
+    <span style="font-size:13px; font-weight:500; color:var(--color-text-primary)">Export & sharing</span>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>One-tap visit summary export</div>
+    <div class="card-body">Generate a PDF of a single visit (prescription + AI summary + attached images) for sharing with a new doctor. Rendered entirely on-device. User explicitly chooses what to include before exporting. No auto-share; user controls the share sheet manually.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Storage architecture</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div>JSON store layout</div>
+      <div class="card-body">
+        <code>medvault/data/visits.json</code> — master linked list of all visit nodes<br><br>
+        <code>medvault/data/contacts.json</code> — doctor/hospital autocomplete cache<br><br>
+        <code>medvault/data/index.json</code> — full-text search index, rebuilt on launch<br><br>
+        All files written atomically (write to temp, rename) to prevent corruption.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot"></div>Media file layout</div>
+      <div class="card-body">
+        <code>medvault/prescriptions/{visitId}.jpg</code> — prescription photos<br><br>
+        <code>medvault/media/{visitId}/{mediaId}.ext</code> — all other attachments<br><br>
+        URIs stored as relative paths in JSON; resolved to absolute on read. Prevents breakage on app reinstall if data is backed up manually.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Privacy & security requirements</div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Zero network calls for medical data</div>
+    <div class="card-body">No analytics SDKs, no crash reporters, no cloud sync. The app operates fully offline. If an AI model requires a network call, it must be user-configured and explicitly opt-in with a clear warning that data will leave the device. All AI inference defaults to on-device.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>App-level lock</div>
+    <div class="card-body">Biometric (Face ID / fingerprint) or PIN lock on app open. Configurable auto-lock timeout. Data files should sit in the app's private sandbox (not accessible to other apps or the system media gallery).</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Tech stack recommendation</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div>Recommended</div>
+      <div class="card-body">
+        <strong style="font-weight:500">Framework:</strong> React Native (Expo) — cross-platform iOS + Android from one codebase<br><br>
+        <strong style="font-weight:500">Storage:</strong> expo-file-system + custom JSON read/write layer<br><br>
+        <strong style="font-weight:500">OCR:</strong> ML Kit Text Recognition (on-device, free)<br><br>
+        <strong style="font-weight:500">AI summary:</strong> llama.cpp via react-native-llama.rn, or Phi-3 ONNX<br><br>
+        <strong style="font-weight:500">Search:</strong> MiniSearch (lightweight, no server)<br><br>
+        <strong style="font-weight:500">PDF:</strong> react-native-pdf for viewing, react-native-html-to-pdf for export
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot"></div>Constraints</div>
+      <div class="card-body">
+        No Firebase, Supabase, AWS Amplify, or any BaaS<br><br>
+        No Mixpanel, Amplitude, Sentry, or analytics<br><br>
+        No push notifications that require a server<br><br>
+        Expo Go compatible for fast dev iteration; eject to bare workflow only if llama.cpp requires it<br><br>
+        Target Android 10+ and iOS 15+
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Deliverables expected from Antigravity</div>
+  <div style="font-size:13.5px; color:var(--muted); line-height:1.8;">
+    1. Working React Native (Expo) project with all screens navigable<br>
+    2. JSON data layer with atomic read/write, linked list traversal, and index rebuilding<br>
+    3. Camera + OCR prescription capture flow with manual override<br>
+    4. On-device AI summary integration (stubbed with a deterministic mock if model is too large for dev builds, with clear integration point)<br>
+    5. Timeline screen with sort, filter, and full-text search<br>
+    6. Visit detail screen with media gallery and AI summary card<br>
+    7. PDF export for a single visit<br>
+    8. Biometric/PIN lock screen<br>
+    9. Doctor contacts autocomplete store<br>
+    10. README covering: data model, file layout, how to swap in a different LLM, how to do a manual backup
+  </div>
+
+  <div class="tag-row" style="margin-top:1.5rem">
+    <span class="tag">React Native</span>
+    <span class="tag">Local-first</span>
+    <span class="tag">On-device AI</span>
+    <span class="tag">Linked list</span>
+    <span class="tag">OCR</span>
+    <span class="tag">Biometric lock</span>
+    <span class="tag">Zero cloud</span>
+    <span class="tag">PDF export</span>
+    <span class="tag">MiniSearch</span>
+    <span class="tag">JSON store</span>
+  </div>
+
+</div>
