@@ -13,10 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditVisitViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val visitRepository: VisitRepository,
-    private val contactRepository: ContactRepository,
-    private val mediaRepository: MediaRepository
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val visitId: String? = savedStateHandle["visitId"]
@@ -24,16 +21,4 @@ class AddEditVisitViewModel @Inject constructor(
 
     private val _currentStep = MutableStateFlow(1)
     val currentStep: StateFlow<Int> = _currentStep.asStateFlow()
-
-    fun nextStep() {
-        if (_currentStep.value < 4) _currentStep.value++
-    }
-
-    fun previousStep() {
-        if (_currentStep.value > 1) _currentStep.value--
-    }
-
-    fun goToStep(step: Int) {
-        if (step in 1..4) _currentStep.value = step
-    }
 }

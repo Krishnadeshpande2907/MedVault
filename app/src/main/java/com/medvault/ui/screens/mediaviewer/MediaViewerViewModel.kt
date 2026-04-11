@@ -10,5 +10,4 @@ class MediaViewerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val visitId: String = checkNotNull(savedStateHandle["visitId"])
-    val startIndex: Int = savedStateHandle["startIndex"] ?: 0
 }
