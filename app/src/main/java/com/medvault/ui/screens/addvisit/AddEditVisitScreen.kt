@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.medvault.ui.screens.addvisit.components.StepIndicatorWithLabels
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,12 +51,10 @@ fun AddEditVisitScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            // Step indicator placeholder
-            Text(
-                text = "Step $currentStep of 4",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 16.dp)
+            // Step indicator
+            StepIndicatorWithLabels(
+                currentStep = currentStep,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
 
             // Step content placeholder
