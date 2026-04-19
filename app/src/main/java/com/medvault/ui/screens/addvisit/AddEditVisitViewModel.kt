@@ -6,6 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medvault.camera.CameraCapture
+import com.medvault.data.entity.PrescriptionEntity
+import com.medvault.data.entity.VisitEntity
 import com.medvault.data.repository.ContactRepository
 import com.medvault.data.repository.MediaRepository
 import com.medvault.data.repository.VisitRepository
@@ -18,6 +20,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.time.LocalDate
+import java.util.UUID
 import javax.inject.Inject
 
 // ── Prescription mode ─────────────────────────────────────────────────────────
@@ -210,5 +216,87 @@ class AddEditVisitViewModel @Inject constructor(
 
     fun onOcrRawTextChanged(text: String) {
         _uiState.update { it.copy(ocrRawText = text) }
+    }
+
+    // ── Save visit ────────────────────────────────────────────────────────────
+
+    /**
+     * Persists the current UI state as a Visit + optional Prescription.
+     * Steps 1 / 3 / 4 fields (doctor info, attachments, reviewed data) will
+     * populate this call once those stubs are implemented in B3.
+     * Sets [AddEditVisitUiState.savedSuccessfully] = true on completion so the
+     * screen can trigger navigation back.
+     */
+    fun saveVisit() {
+        val state = _uiState.value
+        if (state.isSaving) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true, saveError = null) }
+            try {
+                val now = System.currentTimeMillis()
+                val id = visitId ?: UUID.randomUUID().toString()
+
+                // ── Build VisitEntity ────────────────────────────────────────
+                // Doctor-info fields (step 1) are placeholders until B3
+                val visitEntity = VisitEntity(
+                    visitId = id,
+                    date = LocalDate.now().toString(),
+                    doctorName = "",          // TODO B3: from DoctorInfoStep state
+                    doctorPhone = null,        // TODO B3
+                    hospitalName = null,       // TODO B3
+                    doctorSpecialty = null,    // TODO B3
+                    diagnosis = null,          // TODO B3
+                    notes = null,              // TODO B3
+                    nextAppointmentDate = null, // TODO B3
+                    tags = "[]",              // TODO B3: from TagInput state
+                    createdAt = now,
+                    updatedAt = now
+                )
+
+                // ── Build PrescriptionEntity (only if there is content) ──────
+                val hasMedicines = state.medicines.any { it.name.isNotBlank() }
+                val hasPhoto = state.capturedImageUri != null
+
+                val prescriptionEntity: PrescriptionEntity? = if (hasMedicines || hasPhoto) {
+                    // Copy captured prescription image into permanent storage
+                    val savedPhotoPath: String? = if (hasPhoto && state.capturedImageUri != null) {
+                        runCatching {
+                            mediaRepository.saveImage(
+                                sourceUri = state.capturedImageUri,
+                                targetRelativePath = "prescriptions/$id.jpg"
+                            )
+                        }.getOrNull()
+                    } else null
+
+                    PrescriptionEntity(
+                        prescriptionId = UUID.randomUUID().toString(),
+                        visitId = id,
+                        rawText = state.ocrRawText.ifBlank { null },
+                        photoUri = savedPhotoPath,
+                        medicines = Json.encodeToString(state.medicines),
+                        aiSummary = null,         // TODO: PHASE 2 — AI
+                        aiSummaryGeneratedAt = null
+                    )
+                } else null
+
+                visitRepository.saveVisit(
+                    visit = visitEntity,
+                    prescription = prescriptionEntity,
+                    attachments = emptyList() // TODO B3: from AttachMediaStep state
+                )
+
+                _uiState.update {
+                    it.copy(isSaving = false, savedSuccessfully = true)
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isSaving = false,
+                        saveError = "Failed to save visit: ${e.localizedMessage}"
+                    )
+                }
+            }
+        }
     }
 }

@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,10 +22,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +48,17 @@ fun AddEditVisitScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val title = if (viewModel.isEditing) "Edit visit" else "Add visit"
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Navigate back automatically once the save completes
+    LaunchedEffect(uiState.savedSuccessfully) {
+        if (uiState.savedSuccessfully) onSaved()
+    }
+
+    // Show save errors in a Snackbar
+    LaunchedEffect(uiState.saveError) {
+        uiState.saveError?.let { snackbarHostState.showSnackbar(it) }
+    }
 
     // imePadding on the root Box shifts the entire Scaffold (including the bottom
     // nav bar) above the keyboard. The Scaffold then re-measures the content area
@@ -49,6 +67,7 @@ fun AddEditVisitScreen(
     Box(modifier = Modifier.fillMaxSize().imePadding()) {
 
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 TopAppBar(
                     title = { Text(title) },
@@ -67,10 +86,11 @@ fun AddEditVisitScreen(
             bottomBar = {
                 StepNavigationBar(
                     currentStep = uiState.currentStep,
-                    isNextEnabled = !uiState.isOcrLoading,
+                    isSaving = uiState.isSaving,
+                    isNextEnabled = !uiState.isOcrLoading && !uiState.isSaving,
                     onNext = {
                         if (uiState.currentStep < 4) viewModel.nextStep()
-                        else viewModel.nextStep() // B3: will hook saveVisit() here
+                        else viewModel.saveVisit()
                     },
                     onBack = {
                         if (uiState.currentStep > 1) viewModel.prevStep()
@@ -150,6 +170,7 @@ private fun StepPlaceholder(message: String) {
 @Composable
 private fun StepNavigationBar(
     currentStep: Int,
+    isSaving: Boolean = false,
     isNextEnabled: Boolean,
     onBack: () -> Unit,
     onNext: () -> Unit
@@ -181,13 +202,21 @@ private fun StepNavigationBar(
                 enabled = isNextEnabled,
                 modifier = Modifier.weight(if (currentStep > 1) 1f else 1f)
             ) {
-                Text(if (currentStep < 4) "Next" else "Save visit")
-                if (currentStep < 4) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        modifier = Modifier.padding(start = 6.dp)
+                if (currentStep == 4 && isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
+                } else {
+                    Text(if (currentStep < 4) "Next" else "Save visit")
+                    if (currentStep < 4) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.padding(start = 6.dp)
+                        )
+                    }
                 }
             }
         }
