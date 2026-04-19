@@ -44,6 +44,17 @@ interface VisitDao {
     )
     fun search(query: String): Flow<List<VisitEntity>>
 
+    @Transaction
+    @Query(
+        """
+        SELECT visits.* FROM visits 
+        JOIN visit_fts ON visits.rowid = visit_fts.rowid 
+        WHERE visit_fts MATCH :query 
+        ORDER BY date DESC
+        """
+    )
+    fun searchWithDetails(query: String): Flow<List<VisitWithDetails>>
+
     @Query("SELECT DISTINCT tags FROM visits WHERE tags != '[]'")
     suspend fun getAllTags(): List<String>
 }

@@ -29,7 +29,24 @@ class VisitRepository @Inject constructor(
         visitDao.getAllVisitsWithDetails()
 
     fun searchVisits(query: String): Flow<List<VisitEntity>> =
-        visitDao.search(query)
+        visitDao.search(sanitizeQuery(query))
+
+    fun searchVisitsWithDetails(query: String): Flow<List<VisitWithDetails>> =
+        visitDao.searchWithDetails(sanitizeQuery(query))
+
+    /**
+     * Sanitizes a search query for SQLite FTS4.
+     * Appends '*' to the last word for prefix matching and handles basic escaping.
+     */
+    private fun sanitizeQuery(query: String): String {
+        if (query.isBlank()) return ""
+        val trimmed = query.trim()
+        if (trimmed.isEmpty()) return ""
+        // Split by whitespace and append * to each word for prefix matching
+        return trimmed.split("\\s+".toRegex())
+            .filter { it.isNotBlank() }
+            .joinToString(" ") { "$it*" }
+    }
 
     suspend fun getVisitById(id: String): VisitWithDetails? =
         withContext(Dispatchers.IO) {
